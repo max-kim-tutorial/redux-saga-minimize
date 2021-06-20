@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CatState, CatFact } from "./types";
-import { createAsyncReducer, createStartReducerWithoutPayload } from "../utils";
+import { createAsyncReducers } from "../utils";
 
 const initialState: CatState = {
   catFact: {
@@ -18,17 +18,10 @@ export const catSlice = createSlice({
   name: "cats",
   initialState,
   reducers: {
-    fetchCatFacts: createStartReducerWithoutPayload({
-      entity: "catFact"
-    }),
-    successFetchCatFacts: createAsyncReducer({
-      type: "success",
-      entity: "catFact"
-    })<CatFact[]>(),
-    failFetchCatFacts: createAsyncReducer({
-      type: "fail",
-      entity: "catFact"
-    })<string>()
+    ...createAsyncReducers({
+      name: "fetchCatFacts", // reducer 이름, success와 fail은 앞에 각각 붙음
+      entity: "catFact" // 접근할 initialState의 property이름
+    })<any, CatFact[], string>() // 각각의 payload 타입
   }
 });
 

@@ -19,6 +19,7 @@ export interface CatFact {
   used: boolean;
 }
 
+export type CatAsyncEntity = AsyncEntity<CatFact[], string>;
 export interface CatState {
-  catFact: AsyncEntity<CatFact[], string>;
+  catFact: CatAsyncEntity;
 }
