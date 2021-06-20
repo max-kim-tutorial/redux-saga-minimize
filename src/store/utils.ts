@@ -18,8 +18,6 @@ export const createStartReducerWithoutPayload = <
   };
 };
 
-// state[entity]를 일관성있게 추론해줄 수 있는 방법??
-
 export const createAsyncReducer =
   <State extends { [key: string]: any }>({
     type,
@@ -53,14 +51,16 @@ const capitalize = (str: string) => {
 interface CreateAsyncReducersParams {
   name: string;
   entity: string;
-  hasNoStartActionPayload?: boolean;
+  cleanDataWhenStart?: boolean;
 }
 
 // 한번에 하기
+// 시나리오 보충
 export const createAsyncReducers =
   <State extends { [key: string]: any }>({
     name,
-    entity
+    entity,
+    cleanDataWhenStart = false
   }: CreateAsyncReducersParams) =>
   <Start, Success, Fail>() => {
     const result: {
@@ -70,6 +70,9 @@ export const createAsyncReducers =
         | ((state: State, action: PayloadAction<Fail>) => void);
     } = {
       [`${name}`]: (state: State, action: PayloadAction<Start>) => {
+        if (cleanDataWhenStart) {
+          (state[entity] as AsyncEntity<Success, Fail>).data = null;
+        }
         (state[entity] as AsyncEntity<Success, Fail>).status = "loading";
       },
       [`success${capitalize(name)}`]: (

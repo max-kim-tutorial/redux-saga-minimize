@@ -20,6 +20,15 @@ function App() {
 
   return (
     <div className="App">
+      <button
+        onClick={() => {
+          dispatch(catActions.fetchCatFacts({}));
+        }}
+      >
+        fetch again
+      </button>
+      <br />
+
       {status === "loading" ? (
         <div>loading</div>
       ) : (
