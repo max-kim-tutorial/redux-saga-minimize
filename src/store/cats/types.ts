@@ -20,5 +20,5 @@ export interface CatFact {
 }
 
 export interface CatState {
-  catFact: AsyncEntity<CatFact[] | null>;
+  catFact: AsyncEntity<CatFact[], string>;
 }

@@ -1,5 +1,5 @@
-export type AsyncEntity<T> = {
-  data: T;
+export type AsyncEntity<T, R> = {
+  data: T | null;
   status: "idle" | "loading" | "success" | "fail";
-  error: string | null;
+  error: R | null;
 };

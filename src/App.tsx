@@ -14,6 +14,7 @@ function App() {
   );
 
   useEffect(() => {
+    console.log(catActions);
     dispatch(catActions.fetchCatFacts());
   }, [dispatch]);
 

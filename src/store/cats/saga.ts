@@ -1,17 +1,18 @@
+import { CatFact } from "./types";
 import { catActions } from "./index";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { takeEvery, put, call } from "redux-saga/effects";
 
 function* getCatFacts() {
-  const { successCatFacts, failCatFacts } = catActions;
+  const { successFetchCatFacts, failFetchCatFacts } = catActions;
   try {
-    const response = yield call(
+    const response: AxiosResponse<CatFact[]> = yield call(
       axios.get,
       "https://cat-fact.herokuapp.com/facts"
     );
-    yield put(successCatFacts(response.data));
+    yield put(successFetchCatFacts(response.data));
   } catch (e) {
-    yield put(failCatFacts(response.data));
+    yield put(failFetchCatFacts(e.data));
   }
 }
 
