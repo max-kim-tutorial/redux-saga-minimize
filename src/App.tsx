@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store";
-import { catActions } from "./store/cats";
+import { fetchCatFacts } from "./store/cats";
 
 function App() {
   const dispatch = useDispatch();
@@ -14,15 +14,14 @@ function App() {
   );
 
   useEffect(() => {
-    console.log(catActions);
-    dispatch(catActions.fetchCatFacts({}));
+    dispatch(fetchCatFacts({}));
   }, [dispatch]);
 
   return (
     <div className="App">
       <button
         onClick={() => {
-          dispatch(catActions.fetchCatFacts({}));
+          dispatch(fetchCatFacts({}));
         }}
       >
         fetch again

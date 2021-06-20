@@ -1,21 +1,19 @@
 import { CatFact } from "./types";
-import { catActions } from "./index";
-import axios, { AxiosResponse } from "axios";
-import { takeEvery, put, call } from "redux-saga/effects";
+import {
+  fetchCatFacts,
+  successFetchCatFacts,
+  failFetchCatFacts
+} from "./index";
+import { takeEvery } from "redux-saga/effects";
+import { createSaga } from "../utils";
+import { getCatFacts } from "../../api";
 
-function* getCatFacts() {
-  const { successFetchCatFacts, failFetchCatFacts } = catActions;
-  try {
-    const response: AxiosResponse<CatFact[]> = yield call(
-      axios.get,
-      "https://cat-fact.herokuapp.com/facts"
-    );
-    yield put(successFetchCatFacts(response.data));
-  } catch (e) {
-    yield put(failFetchCatFacts(e.data));
-  }
-}
+const getCatFactsSaga = createSaga<any, CatFact[], string>(
+  successFetchCatFacts,
+  failFetchCatFacts,
+  getCatFacts
+);
 
 export default function* catSaga() {
-  yield takeEvery(catActions.fetchCatFacts.type, getCatFacts);
+  yield takeEvery(fetchCatFacts.type, getCatFactsSaga);
 }

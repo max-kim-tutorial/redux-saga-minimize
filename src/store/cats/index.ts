@@ -22,7 +22,8 @@ export const catSlice = createSlice({
   }
 });
 
-export const catActions = catSlice.actions;
+export const { fetchCatFacts, successFetchCatFacts, failFetchCatFacts } =
+  catSlice.actions; // 추론이 잘 안됨...
 export default catSlice.reducer;
 
 /*

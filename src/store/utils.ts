@@ -1,5 +1,7 @@
+import { AxiosResponse } from "axios";
 import { AsyncEntity } from "./types";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { put, call } from "redux-saga/effects";
 
 interface CreateAsyncReducerParams {
   type: "start" | "success" | "fail";
@@ -56,6 +58,7 @@ interface CreateAsyncReducersParams {
 
 // 한번에 하기
 // 시나리오 보충
+// 근데 이렇게 하면 제대로 추론을 못함...
 export const createAsyncReducers =
   <State extends { [key: string]: any }>({
     name,
@@ -92,3 +95,18 @@ export const createAsyncReducers =
     };
     return result;
   };
+
+export const createSaga = <Start, Success, Fail>(
+  success: any, // 이거 추론 잘 안될듯..
+  fail: any,
+  req: any
+) => {
+  return function* (action: PayloadAction<Start>) {
+    try {
+      const response: Success = yield call(req, action.payload);
+      yield put(success(response));
+    } catch (error) {
+      yield put(fail(error.toString() as Fail));
+    }
+  };
+};
