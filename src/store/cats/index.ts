@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CatState, CatFact } from "./types";
-import { createAsyncReducers } from "../utils";
+import {
+  createStartReducer,
+  createSuccessReducer,
+  createFailReducer
+} from "../utils";
 
 const initialState: CatState = {
   catFact: {
@@ -14,16 +18,25 @@ export const catSlice = createSlice({
   name: "cats",
   initialState,
   reducers: {
-    ...createAsyncReducers({
-      name: "fetchCatFacts", // reducer 이름, success와 fail은 앞에 각각 붙음 + 그리고 카멜케이스로 바뀜
-      entity: "catFact", // 접근할 initialState의 property이름
-      cleanDataWhenStart: true // fetching을 시작할때 자동으로 data를 null로 초기화함
-    })<any, CatFact[], string>() // 각각의 payload 타입
+    // ...createAsyncReducers({
+    //   name: "fetchCatFacts",
+    //   entity: "catFact",
+    //   cleanDataWhenStart: true
+    // })<any, CatFact[], string>()
+
+    // 이렇게 하면 각각 추론이 되는데, 내부의 asyncEntity는 또 추론이 안됨ㅋ
+    // 그치만 이게 나은거같기도...
+    fetchCatFacts: createStartReducer("catFact")<any>(),
+    successFetchCatFacts: createSuccessReducer("catFact")<CatFact[]>(),
+    failFetchCatFacts: createFailReducer("catFact")<string>()
   }
 });
 
-export const { fetchCatFacts, successFetchCatFacts, failFetchCatFacts } =
-  catSlice.actions; // 추론이 잘 안됨...
+export const {
+  fetchCatFacts,
+  successFetchCatFacts,
+  failFetchCatFacts
+} = catSlice.actions; // 추론이 잘 안됨...
 export default catSlice.reducer;
 
 /*

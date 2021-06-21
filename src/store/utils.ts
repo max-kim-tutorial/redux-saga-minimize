@@ -2,45 +2,42 @@ import { AsyncEntity } from "./types";
 import { PayloadAction, ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { put, call } from "redux-saga/effects";
 
-interface CreateAsyncReducerParams {
-  type: "start" | "success" | "fail";
-  entity: string;
-}
-
 export const createStartReducerWithoutPayload = <
-  T extends { [key: string]: any }
+  State extends { [key: string]: any }
 >({
   entity
 }: {
   entity: string;
 }) => {
-  return (state: T) => {
+  return (state: State) => {
     state[entity].status = "loading";
   };
 };
 
-export const createAsyncReducer = <State extends { [key: string]: any }>({
-  type,
-  entity
-}: CreateAsyncReducerParams) => <R>() => {
-  switch (type) {
-    case "start":
-      return (state: State, action: PayloadAction<R>) => {
-        state[entity].status = "loading";
-      };
-    case "success":
-      return (state: State, action: PayloadAction<R>) => {
-        state[entity].data = action.payload;
-        state[entity].status = "success";
-      };
-    case "fail":
-      return (state: State, action: PayloadAction<R>) => {
-        state[entity].error = action.payload;
-        state[entity].status = "fail";
-      };
-    default:
-      return (state: State, action: PayloadAction<R>) => {};
-  }
+export const createStartReducer = <State extends { [key: string]: any }>(
+  entity: string
+) => <PayloadType>() => {
+  return (state: State, action: PayloadAction<PayloadType>) => {
+    state[entity].status = "loading";
+  };
+};
+
+export const createSuccessReducer = <State extends { [key: string]: any }>(
+  entity: string
+) => <PayloadType>() => {
+  return (state: State, action: PayloadAction<PayloadType>) => {
+    state[entity].data = action.payload;
+    state[entity].status = "success";
+  };
+};
+
+export const createFailReducer = <State extends { [key: string]: any }>(
+  entity: string
+) => <PayloadType>() => {
+  return (state: State, action: PayloadAction<PayloadType>) => {
+    state[entity].error = action.payload;
+    state[entity].status = "fail";
+  };
 };
 
 const capitalize = (str: string) => {
@@ -55,7 +52,7 @@ interface CreateAsyncReducersParams {
 
 // 한번에 하기
 // 시나리오 보충
-// 근데 이렇게 하면 제대로 추론을 못함...
+// 근데 이 함수의 리턴값이 유니언 타입으로 추론되기 때문에 createSaga단에서 타입오류가 남
 export const createAsyncReducers = <State extends { [key: string]: any }>({
   name,
   entity,
